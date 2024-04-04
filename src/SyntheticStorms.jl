@@ -127,19 +127,19 @@ function generate(outfile, tend, freq=5)
     tocsv(outfile, flashes; a=100, tend)
 end
 
-function main()
+function main(;folder=expanduser("~/data/glm/synthetic/"))
     # Training data
-    outfile = expanduser("~/data/glm/synthetic/synstorm_train.csv.gz")
+    outfile = joinpath(folder, "synstorm_train.csv.gz")
     tend = 1000.0
     generate(outfile, tend)
 
     # Validation data
-    outfile = expanduser("~/data/glm/synthetic/synstorm_valid.csv.gz")
+    outfile = joinpath(folder, "synstorm_valid.csv.gz")
     tend = 200.0
     generate(outfile, tend)    
 
     # Test data
-    outfile = expanduser("~/data/glm/synthetic/synstorm_test.csv.gz")
+    outfile = joinpath(folder, "synstorm_test.csv.gz")
     tend = 200.0
     generate(outfile, tend)    
 end
