@@ -114,7 +114,7 @@ function generate(outfile, tend, freq=5)
         n      = LogNormal(log(1000.0), log(10.0)))
 
     # First we sample storms from the storm distribution
-    storms = rand(dist, round(Int, Int(rand(Poisson(storm.n)))))
+    storms = rand(dist, round(Int, Int(rand(Poisson(tend * freq)))))
 
     # Then for each storm we sample flashes
     flashes = Flash{Float64}[]
