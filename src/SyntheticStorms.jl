@@ -101,7 +101,7 @@ end
 Generate flashes from the storm distribution and save them in `outfile`. `tend` is the final sampling
 time and `freq` the number of storms per unit time.  There will be about `tend` * `freq` storms.
 """
-function generate(outfile, tend, freq=5)
+function generate(outfile, tend, freq=10)
     dist = StormDistribution(
         # Longer than saving interval to reduce boundary effects
         tpeak  = Uniform(0, tend * 1.2),
@@ -130,7 +130,7 @@ end
 function main(;folder=expanduser("~/data/glm/synthetic/"))
     # Training data
     outfile = joinpath(folder, "synstorm_train.csv.gz")
-    tend = 1000.0
+    tend = 2000.0
     generate(outfile, tend)
 
     # Validation data
