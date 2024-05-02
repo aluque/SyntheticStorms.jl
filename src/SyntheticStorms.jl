@@ -7,6 +7,11 @@ using Random
 using Distributions
 using CSV
 using DataFrames
+using Tables
+using StatsBase
+using HDF5
+using FileIO
+using OrderedCollections
 
 struct Flash{T}
     t::T
@@ -143,6 +148,34 @@ function main(;folder=expanduser("~/data/glm/synthetic/"))
     tend = 200.0
     generate(outfile, tend)    
 end
+
+function make_histograms(;folder=expanduser("~/data/glm/synthetic/"))
+    # Bins per unit time
+    bput = 5
+    h = histogram(joinpath(folder, "synstorm_train.csv.gz"); tend=2000.0, nt=bput * 2000)
+    save(joinpath(folder, "synstorm_train.h5"), OrderedDict("flashes" => h.weights))
+
+    h = histogram(joinpath(folder, "synstorm_valid.csv.gz"); tend=200.0, nt=bput * 200)
+    save(joinpath(folder, "synstorm_valid.h5"), OrderedDict("flashes" => h.weights))
+
+    h = histogram(joinpath(folder, "synstorm_test.csv.gz"); tend=200.0, nt=bput * 200)
+    save(joinpath(folder, "synstorm_test.h5"), OrderedDict("flashes" => h.weights))    
+end
+
+
+"""
+Create a histogram of flashes read from file in `fname`. `a` is the lateral size of the square domain,
+`tend` is the upper bound of time, `nx` and `nt` are respectively the number of bins in the x/y and t
+directions.
+"""
+function histogram(fname; a=100.0, tend=100.0, nx=64, nt=100)
+    edges = (LinRange(0, a, nx + 1), LinRange(0, a, nx + 1), LinRange(0, tend, nt + 1))
+    
+    df = CSV.read(fname, DataFrame)
+    h = fit(Histogram, (df.x, df.y, df.t), edges)
+    return h
+end
+
 
 end # module SyntheticStorms
 
